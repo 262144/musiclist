@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const favicon = require('serve-favicon');
+// const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -19,18 +19,13 @@ const app = express();
 // Set up promises with mongoose
 mongoose.Promise = global.Promise;
 // Connect to the Mongo DB
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/musiclist",
-  {
-    useMongoClient: true
-  }
-);
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/musiclist');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -38,8 +33,9 @@ app.use(cookieParser());
 app.use(require('express-session')({
   secret: 'any random string can go here',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -49,6 +45,7 @@ app.use('/api', api);
 app.use('/api/users', users);
 // Configure Passport
 const User = require('./models/user');
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
